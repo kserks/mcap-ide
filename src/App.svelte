@@ -1,6 +1,40 @@
 <script>
 import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
+import listToTree from './utils/list-to-tree.js';
+import { current } from './store/common.js';
+import * as fs from './fs/fs.js';
+
+
+function logger(data){
+  setTimeout(()=>{
+    document.body.innerHTML = `<div style="color: wheat; font-size: 36px;">${JSON.stringify(data)}</div>`
+  }, 1000)
+}
+console.log = logger
+console.error = logger
+
+async function createFile(){
+
+	let res = await fs.writeFile({
+											  "target": "cct",
+											  "id": "1",
+											  "path": "%ID%",
+											  "name": "222.txt",
+											  "data": "Привет мир!"
+									})
+
+	console.log(res)
+}
+
+
+async function getFile(){
+
+	//let res = await fs.readFile()
+	let res = await fs.readDir()
+	console.log(res)
+}
+//getFile()
 
 const theme = {
 	'theme-bg': '#272822'
@@ -12,53 +46,7 @@ $:css = Object.entries(theme)
 /**
  * 
  */
-const tree = {
-		label: "NJS", children: [
-			{ label: "src", children: [
-				{ label: "static.txt"},
-				{ label: "plugins", children: [
-					{ 
-						label: "dialog-box",
-						children: [
-								{ label: "index.js"},
-								{ label: "style.css"},
-								{ label: "tpl.html"},
-						]
-					},
-					{ 
-						label: "wiki",
-						children: [
-								{ label: "index.js"},
-								{ label: "style.css"},
-								{ label: "tpl.html"},
-						]
-					},
-					{ 
-						label: "status-bar",
-						children: [
-								{ label: "index.js"},
-								{ label: "style.css"},
-								{ label: "tpl.html"},
-						]
-					},
-				]},
-				{ label: "file-name.txt"},
-			]},
-			{ label: "public", children: [
-				{ label: "index.html" },
-				{ label: "style.css" },
-				{ 
-					label: "lib", 
-					children: [
-							{ label: "jquery.min.js" },
-							{ label: "p5.js" },
-							{ label: "undescore.js" },
-							{ label: "module-a3s80sd93j.js" },
-					]
-				},
-			]},
-		],
-}
+
 
 $:language = 'js'
 
@@ -105,29 +93,53 @@ for(let i=0;i<list.length;i++){
 
 })
 
+let tree = {}
+
+async function selectDir(dirName){
+	$current.target = dirName;
+	$current.id = '';
+
+	var res = await fs.readDir(dirName);
+	
+	//console.log(res)
+	//let tr = 
+
+
+//	console.log(tr)
+	res = res.map(i=>{
+		if(i.parent===dirName) i.parent = 0
+		return i
+	})
+
+	let tr = listToTree(res)
+	tree = {name: dirName, children: tr}
+
+}
+selectDir('CT')
+
 </script>
 
 <main  style="{css}">
 	<div class="content-wrapper">
 			<aside class="file-system">
 					<div class="file-system__dirs">
-							<div class="file-system__dirs-item">CT</div>
-							<div class="file-system__dirs-item">AM</div>
-							<div class="file-system__dirs-item">WDS</div>
-							<div class="file-system__dirs-item cct" style="width: 112px;"><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id"/></div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WDS')}}>WDS</div>
+							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id"/></div>
 					</div>
 					<div class="file-system__dirs .operator">
-							<div class="file-system__dirs-item">MC</div>
-							<div class="file-system__dirs-item">SRV</div>
-							<div class="file-system__dirs-item">WOL</div>
-							<div class="file-system__dirs-item">WEB</div>
-							<div class="file-system__dirs-item">NJS</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('MC')}}>MC</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('SRV')}}>SRV</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WOL')}}>WOL</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WEB')}}>WEB</div>
+							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('NJS')}}>NJS</div>
 					</div>
 					<div class="file-system__dirs make-file">
-							<input type="text" class="file-system__path" /><i class="file-system__dirs-item fa-solid fa-plus"></i>
+							<input type="text" class="file-system__path" /><i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={createFile}></i>
 					</div>
 					<div class="file-system__tree">
-							<Tree {tree} />
+							<Tree {tree}/>
 					</div>
 					<div class="file-system__dirs">
 							<div class="file-system__dirs-item"><i class="fa-solid fa-eye"></i></div>

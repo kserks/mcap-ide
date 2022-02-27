@@ -1,19 +1,23 @@
 
 <script>
+  export let tree
+
   const _expansionState = {
     /* treeNodeId: expanded <boolean> */
   }
-  export let tree
-  const {label, children} = tree
 
-  let expanded = _expansionState[label] || false
+  $:name = tree.name
+  $:children = tree.children
+
+  let expanded = _expansionState[name] || false
   const toggleExpansion = () => {
-    expanded = _expansionState[label] = !expanded
+    expanded = _expansionState[name] = !expanded
   }
-  $: arrowDown = expanded
 
-function selectFile (label){
-  console.log(label)
+
+function selectFile (name){
+
+  console.log(name)
 }
 
 </script>
@@ -24,7 +28,7 @@ function selectFile (label){
       <span on:click={toggleExpansion}>
 
         <span class="arrow fa-solid fa-folder"></span>
-        {label}
+        {name}
       </span>
       {#if expanded}
         {#each children as child}
@@ -33,8 +37,8 @@ function selectFile (label){
       {/if}
     {:else}
       <span>
-        <span class="no-arrow fa-solid fa-file" on:click={()=>{selectFile(label)}}/>
-        {label}
+        <span class="no-arrow fa-solid fa-file" on:click={()=>{selectFile(name)}}/>
+        {name}
       </span>
     {/if}
   </li>
@@ -54,7 +58,6 @@ function selectFile (label){
     /* transition: transform 200ms; */
   }
 
-  .arrowDown {/* transform: rotate(90deg);*/ }
 ul li >span:hover{
   color: #66D9EF;
   cursor: pointer;
