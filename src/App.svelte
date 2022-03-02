@@ -60,7 +60,7 @@ async function selectDir(dirName){
 	let tr = listToTree(res)
 
 	tree = {name: dirName, children: tr}
-//	console.log(tr)
+  //console.log(tr)
 }
 selectDir('CT')
 

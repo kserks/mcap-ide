@@ -6,7 +6,7 @@ import { current } from "../store/common.js"
 export let tree;
 
 const _expansionState = {
-    /* treeNodeId: expanded <boolean> */
+
 }
 
 $:name = tree.name;
