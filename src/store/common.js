@@ -5,8 +5,8 @@ import { writable } from 'svelte/store';
 
 
 export let current = writable({
-  target: "cct",
-  id: "1",
-  path: '',//"%ID%",
+  target: "CT",
+  id: "b",
+  path: "%ID%",
   name: "*.*",
 })

@@ -1,23 +1,26 @@
 
 <script>
-  export let tree
 
-  const _expansionState = {
+import { current } from "../store/common.js"
+  
+export let tree;
+
+const _expansionState = {
     /* treeNodeId: expanded <boolean> */
-  }
+}
 
-  $:name = tree.name
-  $:children = tree.children
+$:name = tree.name;
+$:children = tree.children;
 
-  let expanded = _expansionState[name] || false
-  const toggleExpansion = () => {
-    expanded = _expansionState[name] = !expanded
-  }
+let expanded = _expansionState[name] || false;
+const toggleExpansion = () => {
+    expanded = _expansionState[name] = !expanded;
+}
 
 
 function selectFile (name){
-
-  console.log(name)
+ // $current.target = 'CT/bytes'
+  $current.name = name
 }
 
 </script>
@@ -25,10 +28,10 @@ function selectFile (name){
 <ul><!-- transition:slide -->
   <li>
     {#if children}
-      <span on:click={toggleExpansion}>
+      <span >
 
-        <span class="arrow fa-solid fa-folder"></span>
-        {name}
+        <span class="arrow fa-solid fa-folder" on:click={toggleExpansion}></span>
+        <span on:click={()=>{selectFile(name)}}>{name}</span>
       </span>
       {#if expanded}
         {#each children as child}
@@ -37,7 +40,7 @@ function selectFile (name){
       {/if}
     {:else}
       <span>
-        <span class="no-arrow fa-solid fa-file" on:click={()=>{selectFile(name)}}/>
+        <span class="no-arrow fa-solid fa-file"/>
         {name}
       </span>
     {/if}

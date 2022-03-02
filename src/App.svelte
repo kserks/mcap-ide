@@ -3,16 +3,11 @@ import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
 import listToTree from './utils/list-to-tree.js';
 import { current } from './store/common.js';
-import * as fs from './fs/fs.js';
+import * as fs from './methods/fs.js';
+import Editor from './components/Editor.svelte';
+import Editor_2 from './components/Editor_2.svelte';
 
 
-function logger(data){
-  setTimeout(()=>{
-    document.body.innerHTML = `<div style="color: wheat; font-size: 36px;">${JSON.stringify(data)}</div>`
-  }, 1000)
-}
-console.log = logger
-console.error = logger
 
 async function createFile(){
 
@@ -28,13 +23,6 @@ async function createFile(){
 }
 
 
-async function getFile(){
-
-	//let res = await fs.readFile()
-	let res = await fs.readDir()
-	console.log(res)
-}
-//getFile()
 
 const theme = {
 	'theme-bg': '#272822'
@@ -48,50 +36,8 @@ $:css = Object.entries(theme)
  */
 
 
-$:language = 'js'
-
-onMount(()=>{
-
-	let editor = ace.edit("editor", { selectionStyle: "text" }); 
-	editor.setTheme("ace/theme/monokai");
-	editor.setFontSize(18);
-	editor.setShowPrintMargin(false);
-	editor.setOption("displayIndentGuides", false);
-	editor.getSession().setMode("ace/mode/javascript");
-let str = `
-const arr = [ { name: 'Василий' }, { name: 'Анна'} ];
-
-for(let i=0;i<list.length;i++){
-	console.log(list[i].name);
-}
-
-function test (req, res){
-	res.sendStatus(200);
-}
-`
-   editor.setValue(str)              
-//editor.getValue();
-/**
- * @@@@@@@@@@@@2222222222222222
- */
-	let editor2 = ace.edit("editor2", { selectionStyle: "text" }); 
-	editor2.setTheme("ace/theme/monokai");
-	editor2.setFontSize(18);
-	editor2.setShowPrintMargin(false);
-	editor2.setOption("displayIndentGuides", false);
-	editor2.getSession().setMode("ace/mode/javascript");
-let str2 = `
-const arr = [ { name: 'Василий' }, { name: 'Анна'} ];
-
-for(let i=0;i<list.length;i++){
-	console.log(list[i].name);
-}
-
-`
-   editor2.setValue(str2)   
 
 
-})
 
 let tree = {}
 
@@ -106,16 +52,18 @@ async function selectDir(dirName){
 
 
 //	console.log(tr)
-	res = res.map(i=>{
+	res = JSON.parse(res.data).map(i=>{
 		if(i.parent===dirName) i.parent = 0
 		return i
 	})
 
 	let tr = listToTree(res)
-	tree = {name: dirName, children: tr}
 
+	tree = {name: dirName, children: tr}
+//	console.log(tr)
 }
 selectDir('CT')
+
 
 </script>
 
@@ -150,13 +98,13 @@ selectDir('CT')
 					</div>
 			</aside>
 			<!--editor-->
-			<div class="file-viewer">
-					<div id="editor"></div>
+			<div class="file-viewer scroll">
+					<Editor/>
 			</div>
 
 	</div>
 	<div class="buttom-file-viewer">
-		<div id="editor2"></div>
+			<Editor_2/>
 	</div>
 </main>
 
@@ -176,7 +124,7 @@ main{
 	height: 100vh;
 	*/
 	width: 1024px;
-	height: 728px;
+	height: 750px;
 	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
 }
 .content-wrapper{
@@ -200,10 +148,10 @@ main{
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 5px;
-}
+}/*
 .file-system__dirs.operator{
 
-}
+}*/
 
 .file-system__dirs-item{
 	background-color: #2F3129;
@@ -258,11 +206,10 @@ main{
 	width: 70%;
 	height: 100%;
 	background-color: var(--theme-bg);
+	position: relative;
+
 }
-#editor{
-	width: 100%;
-	height: 100%;
-}
+
 
 /**
  * BOTTON
@@ -277,13 +224,6 @@ main{
 	position: relative;
 }
 
-#editor2{
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-  height: 100%;
-}
 
 
 </style>

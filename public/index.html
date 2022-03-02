@@ -12,7 +12,17 @@
   <link rel='stylesheet' href='./css/all.css'>
 	<link rel='stylesheet' href='./css/global.css'>
 	<link rel='stylesheet' href='./build/bundle.css'>
+  <script>
 
+      function logger(data){
+        setTimeout(()=>{
+          document.body.innerHTML += `<div class="console">${JSON.stringify(data)}</div>`
+        }, 500)
+      }
+      console.log = logger
+      console.error = logger
+
+  </script>
 	<script defer src='./build/bundle.js'></script>
 </head>
 

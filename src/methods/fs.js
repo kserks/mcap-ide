@@ -18,23 +18,23 @@ export function writeFile(body){
 
   return  query(str);
 }
+
 /**
  * READ FILE
  */
-
-export function readFile(body){
-
+export function readFile(param){
+ //alert(JSON.stringify(param))
   let data = {
-    "target": "cct",
-    "id": "1",
-    "path": "%ID%",
-    "name": "111.txt",
+    "target": param.target,
+    "id": param.id,
+    "path": param.path,
+    "name": param.name,
     "action": "getTargetItem",
     "data": "",
     "type": "text",
     "before": "",
     "after": "",
-    "dts": 1644914843,
+    "dts": Math.floor(new Date().getTime()/1000),
     "ars": true      
   };
 
