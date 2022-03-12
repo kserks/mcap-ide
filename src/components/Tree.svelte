@@ -14,24 +14,33 @@ $:children = tree.children;
 
 let expanded = _expansionState[name] || false;
 const toggleExpansion = () => {
+  
+    //document.querySelectorAll('')
     expanded = _expansionState[name] = !expanded;
+
+    // active-item
 }
 
+function removeSelection (){
+ // active = false
+}
 
 function selectFile (name){
- // $current.target = 'CT/bytes'
+ // removeSelection ()
   $current.name = name
+  //active = true
 }
+
 
 </script>
 
-<ul><!-- transition:slide -->
+<ul>
   <li>
-    {#if children}
-      <span >
+    {#if children }
+      <span  on:click={toggleExpansion}>
 
-        <span class="arrow fa-solid fa-folder" on:click={toggleExpansion}></span>
-        <span on:click={()=>{selectFile(name)}}>{name}</span>
+        <span class="arrow fa-solid fa-folder"></span>
+        <span class="file-item">{name}</span>
       </span>
       {#if expanded}
         {#each children as child}
@@ -39,13 +48,14 @@ function selectFile (name){
         {/each}
       {/if}
     {:else}
-      <span>
+      <span  on:click={()=>{selectFile(name)}} >
         <span class="no-arrow fa-solid fa-file"/>
         {name}
       </span>
     {/if}
   </li>
 </ul>
+
 
 <style>
   ul {
@@ -64,5 +74,8 @@ function selectFile (name){
 ul li >span:hover{
   color: #66D9EF;
   cursor: pointer;
+}
+.active-item{
+  color: red;
 }
 </style>

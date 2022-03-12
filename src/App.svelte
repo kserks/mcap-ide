@@ -6,21 +6,9 @@ import { current } from './store/common.js';
 import * as fs from './methods/fs.js';
 import Editor from './components/Editor.svelte';
 import Editor_2 from './components/Editor_2.svelte';
+import MakeFile from './components/MakeFile.svelte';
+import Controls from './components/Controls.svelte';
 
-
-
-async function createFile(){
-
-	let res = await fs.writeFile({
-											  "target": "cct",
-											  "id": "1",
-											  "path": "%ID%",
-											  "name": "222.txt",
-											  "data": "Привет мир!"
-									})
-
-	console.log(res)
-}
 
 
 
@@ -41,9 +29,7 @@ $:css = Object.entries(theme)
 
 let tree = {}
 
-async function selectDir(dirName){
-	$current.target = dirName;
-	$current.id = '';
+async function readDir (dirName){
 
 	var res = await fs.readDir(dirName);
 	
@@ -59,10 +45,17 @@ async function selectDir(dirName){
 
 	let tr = listToTree(res)
 
-	tree = {name: dirName, children: tr}
+	tree = {name: dirName, children: tr}	
+}
+
+function selectDir(dirName){
+	$current.target = dirName;
+	$current.id = '';
+
+	readDir($current.target)
   //console.log(tr)
 }
-selectDir('CT')
+selectDir('CT');
 
 
 </script>
@@ -70,6 +63,7 @@ selectDir('CT')
 <main  style="{css}">
 	<div class="content-wrapper">
 			<aside class="file-system">
+
 					<div class="file-system__dirs">
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
@@ -83,22 +77,15 @@ selectDir('CT')
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WEB')}}>WEB</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('NJS')}}>NJS</div>
 					</div>
-					<div class="file-system__dirs make-file">
-							<input type="text" class="file-system__path" /><i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={createFile}></i>
-					</div>
+		
+					<MakeFile on:MakeFile={readDir($current.target)}/>
 					<div class="file-system__tree">
 							<Tree {tree}/>
 					</div>
-					<div class="file-system__dirs">
-							<div class="file-system__dirs-item"><i class="fa-solid fa-eye"></i></div>
-							<div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>
-							<div class="file-system__dirs-item"><i class="fa-solid fa-floppy-disk"></i></div>
-							<div class="file-system__dirs-item"><i class="fa-solid fa-file-signature"></i></div>
-							<div class="file-system__dirs-item"><i class="fa-solid fa-trash-can"></i></div>
-					</div>
+					<Controls/>
 			</aside>
 			<!--editor-->
-			<div class="file-viewer scroll">
+			<div class="file-viewer">
 					<Editor/>
 			</div>
 
@@ -108,14 +95,8 @@ selectDir('CT')
 	</div>
 </main>
 
-<style>
-input[type="text"]{
-	padding: 3px 5px;
-	background-color: rgba(255,255,255,0.1);
-	height: 30px;
-	caret-color: #F92672;
-	color: #66D9EF;
-}
+<style scoped>
+
 main{
 	color: #8F908A;
 	background-color: #2F3129;
@@ -143,35 +124,12 @@ main{
 	flex-direction: column;
 	padding: 5px;
 }
-.file-system__dirs{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 5px;
-}/*
+/*
 .file-system__dirs.operator{
 
 }*/
 
-.file-system__dirs-item{
-	background-color: #2F3129;
-	box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.2);
-	padding: 3px 5px;
-	user-select: none;
-	cursor: pointer;
-	border-radius: 4px;
-	min-width: 30px;
-	height: 30px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 50px;
 
-}
-.file-system__dirs-item:hover{
-	background-color: rgba(0,0,0,0.1);
-	color: #66D9EF;
-}
 .file-system__dirs-item.cct{
 	width: 112px;
 }
@@ -191,13 +149,6 @@ main{
 	overflow: auto;
 }
 
-/**
- * input
- */
-
-.file-system__path{
-	width: 235px;
-}
 
 /**
  * FILE VIEWER

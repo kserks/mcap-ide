@@ -9,8 +9,11 @@ export default function (body){
                   //let data = JSON.parse(response).data;
 
                   resolve( JSON.parse(response) );
-              }
-            })
+              },
+              onFailure: function(errCode, errMsg) {
+                          reject( JSON.parse(errMsg) )
+                        }
+              })
 
         } 
         catch (err) {

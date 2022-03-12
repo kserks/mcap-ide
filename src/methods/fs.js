@@ -1,20 +1,30 @@
 import query from '../methods/query.js';
 
+function getTime (){
+  return Math.floor(new Date().getTime()/1000);
+}
 /**
  * WRITE FILE
  */
 
-export function writeFile(body){
+export function writeFile(param){
 
   let data = {
-  "action": "postTargetItem",
-  "type": "text",
-  "before": "",
-  "after": "",
-  "dts": 1644914843,//new Date().getTime()
-  "ars": true      
-}
-  let str = `IDE_${JSON.stringify(Object.assign(data, body))}`
+        "target": param.target,
+        "id": param.id,
+        "path": param.path,
+        "name": param.name,
+        "data": param.data,
+        "action": "postTargetItem",
+        "type": "text",
+        "before": "",
+        "after": "",
+        "dts": getTime(),
+        "ars": true,
+        "player":"",
+        "uuid":""       
+  }
+  let str = `IDE_${JSON.stringify(data)}`;
 
   return  query(str);
 }
@@ -23,19 +33,21 @@ export function writeFile(body){
  * READ FILE
  */
 export function readFile(param){
- //alert(JSON.stringify(param))
+
   let data = {
-    "target": param.target,
-    "id": param.id,
-    "path": param.path,
-    "name": param.name,
-    "action": "getTargetItem",
-    "data": "",
-    "type": "text",
-    "before": "",
-    "after": "",
-    "dts": Math.floor(new Date().getTime()/1000),
-    "ars": true      
+      "target": param.target,
+      "id": param.id,
+      "path": param.path,// %ID%
+      "name": param.name,
+      "action": "getTargetItem",
+      "data": "",
+      "type": "text",
+      "before": "",
+      "after": "",
+      "dts": getTime(),
+      "ars": true,
+      "player":"",
+      "uuid":""       
   };
 
   let str = `IDE_${JSON.stringify(data)}`
@@ -61,9 +73,84 @@ export async function readDir(dirName){
   "before": "",
   "after": "",
   "dts": 1644914843,
-  "ars": true      
+  "ars": true,
+  "player":"",
+  "uuid":""       
 }
   let str = `IDE_${JSON.stringify(data)}`
 
   return await query(str);
 }
+
+/**
+ * REMOVE
+ */
+export function remove(param){
+
+  let data = {
+        "target": param.target,
+        "id": param.id,
+        "path": param.path,
+        "name": param.name,
+        "data": param.data,
+        "action": "deleteTargetItem",
+        "type": "text",
+        "before": "",
+        "after": "",
+        "dts": getTime(),
+        "ars": true,
+        "player":"",
+        "uuid":""       
+  }
+  let str = `IDE_${JSON.stringify(data)}`;
+
+  return  query(str);
+}
+
+//
+/*
+remove({
+  target: 'CT',
+  id: "",
+  path: "%ID%",
+  name: "000.txt"
+})
+
+*/
+
+/**
+ * RENAME
+ */
+export function rename(param){
+
+  let data = {
+        "target": param.target,
+        "id": param.id,
+        "path": param.path,
+        "name": param.name,
+        "data": param.data,
+        "action": "renameTargetItem",
+        "type": "",
+        "before": "",
+        "after": "",
+        "dts": getTime(),
+        "ars": true,
+        "player":"",
+        "uuid":""       
+  }
+  let str = `IDE_${JSON.stringify(data)}`;
+alert(JSON.stringify(data, ['data']))
+  return  query(str);
+}
+
+/*
+
+rename({
+  target: 'CCT',
+  id: "1",
+  path: "%ID%",
+  name: "111.txt",
+  data: "aaaaaaaa.txt"
+})
+
+*/

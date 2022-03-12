@@ -4,14 +4,14 @@ import { onMount } from 'svelte';
 
 $:language = 'javascript';
 
-let str = `
+let str2 = `
 const arr = [ { name: 'Василий' }, { name: 'Анна'} ];
 
 for(let i=0;i<list.length;i++){
   console.log(list[i].name);
 }
 `
-
+let str = '';
 onMount(()=>{
 
   let editor = ace.edit("editor_2", { selectionStyle: "text" });

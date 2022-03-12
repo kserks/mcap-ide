@@ -1,3 +1,4 @@
+
 export default function unflatten(arr) {
       var tree = [],
           mappedArr = {},
@@ -5,10 +6,11 @@ export default function unflatten(arr) {
           mappedElem;
 
 
-      for(var i = 0, len = arr.length; i < len; i++) {
+      for(let i = 0; i < arr.length; i++) {
           arrElem = arr[i];
           mappedArr[arrElem.name] = arrElem;
           mappedArr[arrElem.name]['children'] = [];
+          mappedArr[arrElem.name]['active'] = false;
       }
 
 
@@ -16,6 +18,7 @@ export default function unflatten(arr) {
         if (mappedArr.hasOwnProperty(name)) {
           mappedElem = mappedArr[name];
           if (mappedElem.parent) {
+
             mappedArr[mappedElem['parent']]['children'].push(mappedElem);
           }
           else {
