@@ -107,16 +107,7 @@ export function remove(param){
   return  query(str);
 }
 
-//
-/*
-remove({
-  target: 'CT',
-  id: "",
-  path: "%ID%",
-  name: "000.txt"
-})
 
-*/
 
 /**
  * RENAME
@@ -139,18 +130,6 @@ export function rename(param){
         "uuid":""       
   }
   let str = `IDE_${JSON.stringify(data)}`;
-alert(JSON.stringify(data, ['data']))
+
   return  query(str);
 }
-
-/*
-
-rename({
-  target: 'CCT',
-  id: "1",
-  path: "%ID%",
-  name: "111.txt",
-  data: "aaaaaaaa.txt"
-})
-
-*/

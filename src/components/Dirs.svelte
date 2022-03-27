@@ -1,6 +1,6 @@
 <script>
 //import Aside from './components/Aside.svelte'
-
+/*
 const dirs = [
   { name: 'CT', active: false, type: 'player' },
   { name: 'AM', active: false, type: 'player' },
@@ -14,7 +14,7 @@ const dirs = [
 ]
 
 $:serverDirs = dirs.filter(item=>item.type==='server');
-
+*/
 </script>
 
 <div class="component">

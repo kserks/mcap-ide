@@ -29,22 +29,18 @@ $:css = Object.entries(theme)
 
 let tree = {}
 
+
 async function readDir (dirName){
 
 	var res = await fs.readDir(dirName);
-	
-	//console.log(res)
-	//let tr = 
 
 
-//	console.log(tr)
 	res = JSON.parse(res.data).map(i=>{
-		if(i.parent===dirName) i.parent = 0
-		return i
-	})
+		if(i.parent===dirName) i.parent = 0;
+		return i;
+	});
 
-	let tr = listToTree(res)
-
+	let tr = listToTree(res);
 	tree = {name: dirName, children: tr}	
 }
 
@@ -52,8 +48,7 @@ function selectDir(dirName){
 	$current.target = dirName;
 	$current.id = '';
 
-	readDir($current.target)
-  //console.log(tr)
+	readDir($current.target);
 }
 selectDir('CT');
 
@@ -82,7 +77,7 @@ selectDir('CT');
 					<div class="file-system__tree">
 							<Tree {tree}/>
 					</div>
-					<Controls/>
+					<Controls on:controlChange={readDir($current.target)}/>
 			</aside>
 			<!--editor-->
 			<div class="file-viewer">

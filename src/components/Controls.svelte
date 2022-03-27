@@ -2,30 +2,97 @@
 
 import { current } from '../store/common.js';
 import saveFile from '../methods/save-file.js';
+import * as fs from '../methods/fs.js';
+import { createEventDispatcher } from 'svelte'
+
+const emit = createEventDispatcher();
 
 
 function save (){
     saveFile({
           "target": $current.target,
           "id": $current.id,
-          "path": "%ID%",
+          "path": $current.path,
           "name": $current.name,
           "data": window.editor.getValue()
     });
 }
 
+let showInput = false;
+let newName = '';
+
+function rename (){
+
+  if($current.name!=="*.*"){
+      showInput = true;
+      //$current.name
+  }
+
+  /*
+    fs.rename({
+          "target": $current.target,
+          "id":  $current.id,
+          "path": $current.path,
+          "name": $current.name,
+          "data": newName
+    });
+    emit('controlChange');*/
+}
+
+
+function del (){
+  if($current.name!=='*.*'){
+      fs.remove({
+            "target": $current.target,
+            "id":  $current.id,
+            "path": $current.path,
+            "name": $current.name,
+            "data": ""
+      });
+      emit('controlChange');
+      editor.setValue('');
+  }
+}
+
+
+
+
 </script>
 
-<div class="file-system__dirs">
-              <div class="file-system__dirs-item"><i class="fa-solid fa-eye"></i></div>
-              <div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>
-              <div class="file-system__dirs-item" on:click={save}><i class="fa-solid fa-floppy-disk"></i></div>
-              <div class="file-system__dirs-item"><i class="fa-solid fa-file-signature"></i></div>
-              <div class="file-system__dirs-item"><i class="fa-solid fa-trash-can"></i></div>
+<div >
+  <div class="input-wrapper  { showInput?'show':'' }">
+      <input type="text" bind:value={newName}>
+      <i class="fa-solid fa-floppy-disk"></i>
+  </div>
+  <div class="file-system__dirs">
+      <div class="file-system__dirs-item"><i class="fa-solid fa-eye"></i></div>
+      <div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>
+      <div class="file-system__dirs-item" on:click={save}><i class="fa-solid fa-floppy-disk"></i></div>
+      <div class="file-system__dirs-item" on:click={rename}><i class="fa-solid fa-file-signature"></i></div>
+      <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
+  </div>
 </div>
 
 <style scoped>
 
+
+.input-wrapper{
+  margin-bottom: 7px;
+  display: none;
+}
+.show{
+  display: block;
+}
+.input-wrapper input{
+  width: 90%;
+}
+.input-wrapper i{
+  margin-left: 5px;
+}
+.input-wrapper i:hover{
+  cursor: pointer;
+  color: lightgreen;
+}
 
 .file-system__dirs-item{
   background-color: #2F3129;

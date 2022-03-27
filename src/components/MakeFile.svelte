@@ -5,7 +5,7 @@ import { createEventDispatcher } from 'svelte'
 
 const emit = createEventDispatcher();
 
-let dirName = '';
+
 let fileName = '';
 
 async function MakeFile(){
@@ -15,18 +15,17 @@ async function MakeFile(){
       let res = await fs.writeFile({
                             "target": $current.target,
                             "id": "",
-                            "path": dirName,
+                            "path": $current.path,
                             "name": fileName,
                             "data": ""
                       });
-      dirName = '';
       fileName = '';
       emit('MakeFile');
     }
     catch (err){
-      alert(err)
+      console.error(err);
     }
-    //  console.log(res)
+   
   }
 
 }
@@ -36,8 +35,8 @@ async function MakeFile(){
 </script>
 
 <div class="file-system__dirs make-file">
-    <input type="text" class="file-system__path" placeholder="dir" bind:value={dirName} />
-    <input type="text" class="file-system__file" placeholder="*.*" bind:value={fileName} />
+
+    <input type="text" class="file-system__file" placeholder="{$current.path}" bind:value={fileName} />
     <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={MakeFile}></i>
 </div>
 
@@ -67,12 +66,10 @@ async function MakeFile(){
  * input
  */
 
-.file-system__path{
-  width: 150px;
-}
+
 .file-system__file{
-  width: 80px;
-  text-align: center;
+  width: 100%;
+
 }
 
 .file-system__dirs-item:hover{
