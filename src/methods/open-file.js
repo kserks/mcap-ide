@@ -6,7 +6,7 @@ let lang = 'text';
 language.subscribe(val=>val=lang);
 
 
-export default function (ctx){
+export default function (editorInstance, ctx){
 
     
       if(ctx.name!=='*.*'){
@@ -18,14 +18,14 @@ export default function (ctx){
             lang = 'text'
           }
 
-            editor.getSession().setMode(`ace/mode/${lang}`);
+            editorInstance.getSession().setMode(`ace/mode/${lang}`);
               
               fs.readFile(ctx)
                   .then(fileBody=>{
 
-                      editor.setValue(fileBody.data);
-                      editor.clearSelection(); 
-                      editor.getSession().setScrollTop(0);
+                      editorInstance.setValue(fileBody.data);
+                      editorInstance.clearSelection(); 
+                      editorInstance.getSession().setScrollTop(0);
                   })
                   .catch(e=>console.error(e))
                 

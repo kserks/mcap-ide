@@ -2,8 +2,6 @@ import { writable } from 'svelte/store';
 
 
 
-
-
 export let current = writable({
   target: "CT",
   id: "",
@@ -12,3 +10,4 @@ export let current = writable({
 })
 
 export let language = writable('text');
+export let root = writable('');

@@ -2,16 +2,7 @@
 import { current } from "../store/common.js"
 import { onMount } from 'svelte';
 
-$:language = 'javascript';
 
-let str2 = `
-const arr = [ { name: 'Василий' }, { name: 'Анна'} ];
-
-for(let i=0;i<list.length;i++){
-  console.log(list[i].name);
-}
-`
-let str = '';
 onMount(()=>{
 
   let editor = ace.edit("editor_2", { selectionStyle: "text" });
@@ -19,9 +10,11 @@ onMount(()=>{
   editor.setFontSize(18);
   editor.setShowPrintMargin(false);
   editor.setOption("displayIndentGuides", false);
-  editor.getSession().setMode(`ace/mode/${language}`);
-  editor.setValue(str); 
-})
+  editor.getSession();
+  editor.session.setMode("ace/mode/text");
+  editor.setReadOnly(true);
+  window.editor_2 = editor;
+});
 </script>
 
 <div id="editor_2"></div>
@@ -33,5 +26,7 @@ onMount(()=>{
   left: 0;
   width: 100%;
   height: 100%;
+
 }
+
 </style>

@@ -10,7 +10,6 @@ export default function unflatten(arr) {
           arrElem = arr[i];
           mappedArr[arrElem.name] = arrElem;
           mappedArr[arrElem.name]['children'] = [];
-          mappedArr[arrElem.name]['active'] = false;
       }
 
 

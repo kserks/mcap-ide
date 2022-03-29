@@ -1,5 +1,5 @@
 <script>
-import { current } from '../store/common.js';
+import { current, root } from '../store/common.js';
 import * as fs from '../methods/fs.js';
 import { createEventDispatcher } from 'svelte'
 
@@ -8,10 +8,9 @@ const emit = createEventDispatcher();
 
 let fileName = '';
 
-async function MakeFile(){
 
-  if($current.target){
-    try{
+async function createFile(){
+  try{
       let res = await fs.writeFile({
                             "target": $current.target,
                             "id": "",
@@ -20,24 +19,34 @@ async function MakeFile(){
                             "data": ""
                       });
       fileName = '';
-      emit('MakeFile');
-    }
-    catch (err){
-      console.error(err);
-    }
-   
+      emit('makeFile');
   }
-
+  catch (err){
+      console.error(err);
+  }
+   
 }
 
+let dirName = '';
+function add (){
+  if($current.target==='') return;
+  if(fileName===''&&dirName!==''){
+      $root = dirName;
+      dirName = '';
+      emit('selectTarget')
+  }
+  else{
+    createFile();
+  }
+}
 
 
 </script>
 
 <div class="file-system__dirs make-file">
-
-    <input type="text" class="file-system__file" placeholder="{$current.path}" bind:value={fileName} />
-    <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={MakeFile}></i>
+    <input type="text" class="file-system__root" bind:value={dirName} />
+    <input type="text" class="file-system__file" placeholder="{$current.name}" bind:value={fileName} />
+    <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={add}></i>
 </div>
 
 <style scoped>
@@ -66,9 +75,11 @@ async function MakeFile(){
  * input
  */
 
-
+.file-system__root{
+  width: 40%;
+}
 .file-system__file{
-  width: 100%;
+  width: 40%;
 
 }
 

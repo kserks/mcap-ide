@@ -2,8 +2,10 @@
 
 import { current } from '../store/common.js';
 import saveFile from '../methods/save-file.js';
+import openFile from "../methods/open-file.js";
 import * as fs from '../methods/fs.js';
 import { createEventDispatcher } from 'svelte'
+
 
 const emit = createEventDispatcher();
 
@@ -22,13 +24,13 @@ let showInput = false;
 let newName = '';
 
 function rename (){
+    if($current.name==="*.*") return;
+    showInput = !showInput;
+    newName = $current.name;
+}
 
-  if($current.name!=="*.*"){
-      showInput = true;
-      //$current.name
-  }
-
-  /*
+function saveNewName (){
+  if(newName!==$current.name){
     fs.rename({
           "target": $current.target,
           "id":  $current.id,
@@ -36,7 +38,9 @@ function rename (){
           "name": $current.name,
           "data": newName
     });
-    emit('controlChange');*/
+    emit('controlChange');
+  }
+  showInput = false;
 }
 
 
@@ -51,9 +55,13 @@ function del (){
       });
       emit('controlChange');
       editor.setValue('');
+      editor_2.setValue('');
   }
 }
 
+function open (){
+  openFile(editor_2, $current)
+}
 
 
 
@@ -62,12 +70,13 @@ function del (){
 <div >
   <div class="input-wrapper  { showInput?'show':'' }">
       <input type="text" bind:value={newName}>
-      <i class="fa-solid fa-floppy-disk"></i>
+      <i class="fa-solid fa-floppy-disk"  on:click={saveNewName}></i>
   </div>
   <div class="file-system__dirs">
-      <div class="file-system__dirs-item"><i class="fa-solid fa-eye"></i></div>
-      <div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>
       <div class="file-system__dirs-item" on:click={save}><i class="fa-solid fa-floppy-disk"></i></div>
+      <div class="file-system__dirs-item" on:click={open}><i class="fa-solid fa-eye"></i></div>
+      <!--<div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>-->
+      
       <div class="file-system__dirs-item" on:click={rename}><i class="fa-solid fa-file-signature"></i></div>
       <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
   </div>

@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
 import listToTree from './utils/list-to-tree.js';
-import { current } from './store/common.js';
+import { current, root } from './store/common.js';
 import * as fs from './methods/fs.js';
 import Editor from './components/Editor.svelte';
 import Editor_2 from './components/Editor_2.svelte';
@@ -24,35 +24,46 @@ $:css = Object.entries(theme)
  */
 
 
-
-
-
 let tree = {}
-
-
 async function readDir (dirName){
+	let dir;
+	if($root===''){
+		dir = dirName;
+	}
+	else{
+		dir = dirName +'/'+ $root;
 
-	var res = await fs.readDir(dirName);
+	}
+	let lastPathChunk = dir.split('/').pop();
 
+	var res = await fs.readDir(dir);
 
 	res = JSON.parse(res.data).map(i=>{
-		if(i.parent===dirName) i.parent = 0;
+		
+		if(i.parent===lastPathChunk) i.parent = 0;
 		return i;
 	});
-
 	let tr = listToTree(res);
-	tree = {name: dirName, children: tr}	
+	tree = {name: lastPathChunk, isDir: true, path: '', children: tr}	
 }
+
+
 
 function selectDir(dirName){
 	$current.target = dirName;
-	$current.id = '';
+	if($current.target==='CCT'){
 
-	readDir($current.target);
+		readDir($current.target);
+	}
+	else{
+		readDir($current.target);
+	}
+	
+
 }
-selectDir('CT');
 
 
+let operator = false;
 </script>
 
 <main  style="{css}">
@@ -63,17 +74,18 @@ selectDir('CT');
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WDS')}}>WDS</div>
-							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id"/></div>
+							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={$current.id}/></div>
 					</div>
-					<div class="file-system__dirs .operator">
+					{#if operator}
+					<div class="file-system__dirs">
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('MC')}}>MC</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('SRV')}}>SRV</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WOL')}}>WOL</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WEB')}}>WEB</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('NJS')}}>NJS</div>
 					</div>
-		
-					<MakeFile on:MakeFile={readDir($current.target)}/>
+					{/if}
+					<MakeFile on:makeFile={readDir($current.target)} on:selectTarget={readDir($current.target)}/>
 					<div class="file-system__tree">
 							<Tree {tree}/>
 					</div>
@@ -85,7 +97,7 @@ selectDir('CT');
 			</div>
 
 	</div>
-	<div class="buttom-file-viewer">
+	<div class="bottom-file-viewer">
 			<Editor_2/>
 	</div>
 </main>
@@ -95,12 +107,13 @@ selectDir('CT');
 main{
 	color: #8F908A;
 	background-color: #2F3129;
-	/*
 	width: 100vw;
 	height: 100vh;
-	*/
+	padding: 20px;
+/*
 	width: 1024px;
 	height: 750px;
+*/
 	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
 }
 .content-wrapper{
@@ -112,7 +125,7 @@ main{
  * FS
  */
 .file-system{
-	width: 30%;
+	width: 25%;
 	height: 100%;
 	background-color: var(--theme-bg);
 	display: flex;
@@ -149,19 +162,22 @@ main{
  * FILE VIEWER
  */
 .file-viewer{
-	width: 70%;
+	width: 75%;
 	height: 100%;
 	background-color: var(--theme-bg);
 	position: relative;
-
 }
 
+.content-wrapper{
+	border: 1px solid #222;
+}
 
 /**
- * BOTTON
+ * BOTTOM
  */
 
-.buttom-file-viewer{
+.bottom-file-viewer{
+	border: 1px solid #222;
 	height: 30%;
 	width: 100%;
 	background-color: var(--theme-bg);

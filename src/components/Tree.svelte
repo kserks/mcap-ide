@@ -13,8 +13,8 @@ const _expansionState = {
 
 $:name = tree.name;
 $:children = tree.children;
+$:isDir = tree.isDir;
 
-//$:isDir = tree.isDir;
 
 let expanded = _expansionState[name] || false;
 const toggleExpansion = () => {
@@ -22,9 +22,6 @@ const toggleExpansion = () => {
     $current.path = pathNormalize (tree.path)
 }
 
-function removeSelection (){
- // active = false
-}
 
 function pathNormalize (path){
   return path.split(/\\{1,}/g)
@@ -46,7 +43,7 @@ function selectFile (name){
 
   // console.log($current.name)
   
-  openFile($current);
+  openFile(editor, $current);
 }
 
 
@@ -55,9 +52,9 @@ function selectFile (name){
 
 
 {#if children }
-    <ul>
+    <ul id="tree_files">
       <li>
-        {#if children.length>0 }
+        {#if isDir }
           <span  on:click={toggleExpansion}>
 
             <span class="arrow fa-solid fa-folder"></span>
