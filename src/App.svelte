@@ -1,72 +1,108 @@
 <script>
 import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
-import listToTree from './utils/list-to-tree.js';
+
 import { current, root } from './store/common.js';
-import * as fs from './methods/fs.js';
+//import readDir from './methods/read-dir.js';
 import Editor from './components/Editor.svelte';
 import Editor_2 from './components/Editor_2.svelte';
 import MakeFile from './components/MakeFile.svelte';
 import Controls from './components/Controls.svelte';
 
+import listToTree from './utils/list-to-tree.js';
+import * as fs from './methods/fs.js';
 
 
-
-const theme = {
-	'theme-bg': '#272822'
-}	
-
-$:css = Object.entries(theme)
-						.map(([key, value]) => `--${key}:${value}`)
-						.join(';');
 /**
- * 
+ * force update
+ * Перерисовка компонента
  */
 
+let operator = false;
+let visible = true;
+function forceUpdate() {
+  visible = false;
+  setTimeout(()=>{visible = true}, 0)
+}
 
-let tree = {}
-async function readDir (dirName){
+/**
+ * read dir
+ */
+
+/**
+ * @props tree
+ */
+let tree = {};
+
+async function readDir (dirName, pathname){
+	/**
+	 * Нам требуется как путь к директории для чтения
+	 * так и последняя директория этого пути.
+	 */
 	let dir;
-	if($root===''){
+	if(pathname===''){
 		dir = dirName;
 	}
 	else{
-		dir = dirName +'/'+ $root;
+		dir = dirName +'/'+ pathname;
 
 	}
 	let lastPathChunk = dir.split('/').pop();
 
-	var res = await fs.readDir(dir);
-
+	let res = await fs.readDir(dir);
+	/**
+	 * Добавляем свойство children к каждому элементу массива
+	 * Это требуется для функции listToTree
+	 */
 	res = JSON.parse(res.data).map(i=>{
-		
-		if(i.parent===lastPathChunk) i.parent = 0;
-		return i;
-	});
-	let tr = listToTree(res);
-	tree = {name: lastPathChunk, isDir: true, path: '', children: tr}	
+						i.children = [];
+						return i;
+				});
+
+	const children = listToTree(res, dirName);
+
+	tree = { 
+		name: lastPathChunk, 
+		isDir: true, 
+		path: '', 
+		children 
+	}	
+
 }
 
+function resetSelectedDir(){
+	$current.path = '';
+	$root = '';
+	//forceUpdate();	
+}
 
+$:cct_id = '';
 
 function selectDir(dirName){
+	resetSelectedDir();
 	$current.target = dirName;
 	if($current.target==='CCT'){
+			if(/\d+/g.test(cct_id)){
+    			if(cct_id!==''){
+    				$current.id = cct_id;
+    				tree = readDir($current.target, $root);
+    			}
+  		}
 
-		readDir($current.target);
 	}
 	else{
-		readDir($current.target);
+		readDir($current.target, $root);
+
 	}
 	
-
 }
 
+selectDir('AM');
 
-let operator = false;
+
 </script>
 
-<main  style="{css}">
+<main  style="background-color: #272822">
 	<div class="content-wrapper">
 			<aside class="file-system">
 
@@ -74,7 +110,7 @@ let operator = false;
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WDS')}}>WDS</div>
-							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={$current.id}/></div>
+							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={cct_id}/></div>
 					</div>
 					{#if operator}
 					<div class="file-system__dirs">
@@ -87,7 +123,9 @@ let operator = false;
 					{/if}
 					<MakeFile on:makeFile={readDir($current.target)} on:selectTarget={readDir($current.target)}/>
 					<div class="file-system__tree">
-							<Tree {tree}/>
+							{#if visible}
+									<Tree {tree}/>
+							{/if}
 					</div>
 					<Controls on:controlChange={readDir($current.target)}/>
 			</aside>

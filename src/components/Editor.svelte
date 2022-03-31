@@ -1,5 +1,5 @@
 <script>
-import { current,  language } from "../store/common.js"
+import { current,  language } from "../store/common.js";
 import { onMount } from 'svelte';
 import * as fs from '../methods/fs.js';
 import saveFile from '../methods/save-file.js';

@@ -7,7 +7,7 @@ const emit = createEventDispatcher();
 
 
 let fileName = '';
-
+let dirName = '';
 
 async function createFile(){
   try{
@@ -27,7 +27,7 @@ async function createFile(){
    
 }
 
-let dirName = '';
+
 function add (){
   if($current.target==='') return;
   if(fileName===''&&dirName!==''){

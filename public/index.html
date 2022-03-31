@@ -3,19 +3,10 @@
 <head>
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
-<!--
-  <script src='lib/ext-language_tools.js'></script>
-  <script src="lib/theme-monokai.js"></script>
-  <script src='lib/ace.js'></script>
--->
-  <!--
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
--->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ext-language_tools.js'></script>
 
+ 
+  <script src='js/ace/ace.js'></script>
   <title>App</title>
-
 	<link rel='icon' type='image/png' href='favicon.png'>
   <link rel='stylesheet' href='css/all.css'>
 	<link rel='stylesheet' href='css/global.css'>
@@ -24,20 +15,12 @@
   <script>
 
       function logger(data){
-   
-          document.body.innerHTML += `<div class="console">${JSON.stringify(data)}</div>`
-    
+          setTimeout(()=>{
+            document.body.innerHTML += `<div class="console">${JSON.stringify(data)}</div>`
+          }, 500)
       }
-      console.error = logger;
-      console.info = logger;
-      console.log = logger;
-      /*
-      window.addEventListener('error', function(e) {
-          e.preventDefault();
-          console.error(e.message);
-          return true;
-      }, true);
-      */
+
+
   </script>
 	<script defer src='build/bundle.js'></script>
 </head>

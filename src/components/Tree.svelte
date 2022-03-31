@@ -2,9 +2,9 @@
 <script>
 import openFile from "../methods/open-file.js";
 import { current } from "../store/common.js";
-//import { onMount } from "svelte";
+import normalizePath from '../methods/normalize-path.js';
 
-  
+
 export let tree;
 
 const _expansionState = {
@@ -17,19 +17,9 @@ $:isDir = tree.isDir;
 
 
 let expanded = _expansionState[name] || false;
-const toggleExpansion = () => {
+function toggleExpansion() {
     expanded = _expansionState[name] = !expanded;
-    $current.path = pathNormalize (tree.path)
-}
-
-
-function pathNormalize (path){
-  return path.split(/\\{1,}/g)
-             .join('/')
-             .replace('/'+$current.name, '')
-             .replace('ide/', '')
-             .replace(`${$current.target}`, '')
-             .replace(/^\//g, '');
+    $current.path = normalizePath(tree.path, $current);
 
 }
 
@@ -39,7 +29,7 @@ function selectFile (name){
   /**
    * Убираю лишние части пути, что бы получить валидный путь для модуля mcef.Query
    */
-  $current.path = pathNormalize (tree.path)
+  $current.path = normalizePath(tree.path, $current);
 
   // console.log($current.name)
   
@@ -59,6 +49,7 @@ function selectFile (name){
 
             <span class="arrow fa-solid fa-folder"></span>
             <span class="file-item">{name}</span>
+            <span style="color: skyblue" > {children.length}</span>
           </span>
           {#if expanded}
             {#each children as child}

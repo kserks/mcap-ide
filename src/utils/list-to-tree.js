@@ -1,29 +1,27 @@
+/**
+ * List to tree
+ * Flat array to object tree
+ * @Array list
+ * @String root
+ */
 
-export default function unflatten(arr) {
-      var tree = [],
-          mappedArr = {},
-          arrElem,
-          mappedElem;
-
-
-      for(let i = 0; i < arr.length; i++) {
-          arrElem = arr[i];
-          mappedArr[arrElem.name] = arrElem;
-          mappedArr[arrElem.name]['children'] = [];
-      }
-
-
-      for (var name in mappedArr) {
-        if (mappedArr.hasOwnProperty(name)) {
-          mappedElem = mappedArr[name];
-          if (mappedElem.parent) {
-
-            mappedArr[mappedElem['parent']]['children'].push(mappedElem);
-          }
-          else {
-            tree.push(mappedElem);
-          }
-        }
-      }
-      return tree;
+export default function (list, root) {
+  let map = {};
+  let node;
+  let roots = [];
+  let i;
+  
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].name] = i; 
+    list[i].children = [];
+  }
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    if (node.parent !== root) {
+      list[map[node.parent]].children.push(node);
+    } else {
+      roots.push(node);
     }
+  }
+  return roots;
+}

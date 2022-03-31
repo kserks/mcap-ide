@@ -10,5 +10,9 @@ export default {
   'py': 'python',
   'txt': 'text',
   'md': 'markdown',
-  'json': 'json'
+  'json': 'json',
+  'html': 'html',
+  'css': 'css',
+  
+  
 }
