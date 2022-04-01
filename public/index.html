@@ -3,7 +3,8 @@
 <head>
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
-
+  <link href="js/video/video-js.min.css" rel="stylesheet">
+  <script src="js/video/video.min.js"></script>
  
   <script src='js/ace/ace.js'></script>
   <title>App</title>
@@ -13,16 +14,19 @@
 
 	<link rel='stylesheet' href='build/bundle.css'>
   <script>
-
+    /**
+     * Консоль после первого вызова ложит весь скрипт х.з почему
+     */
+      /*
       function logger(data){
-          setTimeout(()=>{
             document.body.innerHTML += `<div class="console">${JSON.stringify(data)}</div>`
-          }, 500)
       }
-
-
+      console.log = console.error = console.info = logger;
+      */
   </script>
+
 	<script defer src='build/bundle.js'></script>
+  <script src="js/active-file.js"></script>
 </head>
 
 <body>

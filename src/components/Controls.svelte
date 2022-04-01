@@ -1,8 +1,8 @@
 <script>
 
-import { current } from '../store/common.js';
+import { current, showVideoPlayer } from '../store/common.js';
 import saveFile from '../methods/save-file.js';
-import openFile from "../methods/open-file.js";
+import { openFile, updateMode } from "../methods/open-file.js";
 import * as fs from '../methods/fs.js';
 import { createEventDispatcher } from 'svelte'
 
@@ -29,16 +29,24 @@ function rename (){
     newName = $current.name;
 }
 
-function saveNewName (){
+async function saveNewName (){
   if(newName!==$current.name){
-    fs.rename({
-          "target": $current.target,
-          "id":  $current.id,
-          "path": $current.path,
-          "name": $current.name,
-          "data": newName
-    });
-    emit('controlChange');
+    try{
+      await fs.rename({
+                "target": $current.target,
+                "id":  $current.id,
+                "path": $current.path,
+                "name": $current.name,
+                "data": newName
+            });
+      emit('controlChange');
+      //openFile(editor, $current)
+    }
+    catch(e){
+      alert(e)
+    }
+
+
   }
   showInput = false;
 }
@@ -60,27 +68,52 @@ function del (){
 }
 
 function open (){
-  openFile(editor_2, $current)
+  openFile(editor_2, $current);
 }
 
+/**
+ * set Video
+ * webm || ogg
+ */
 
-
+let videoOpen = false;
+let videoSource = '';
+function openVideo (){
+  videoOpen = !videoOpen;
+}
+function setVideo (){
+  if(videoSource===''){
+    $showVideoPlayer = false;
+    openVideo = false;
+    return;
+  }
+  $showVideoPlayer = true;
+  player.src(videoSource);
+  videoOpen = false;
+}
 </script>
 
-<div >
+<div>
+  <!--скрытые формы ввода-->
   <div class="input-wrapper  { showInput?'show':'' }">
       <input type="text" bind:value={newName}>
       <i class="fa-solid fa-floppy-disk"  on:click={saveNewName}></i>
   </div>
+  <div class="input-wrapper  { videoOpen?'show':'' }">
+      <input type="text" bind:value={videoSource}>
+      <i class="fa-solid fa-floppy-disk"  on:click={setVideo}></i>
+  </div>
+  <!--кнопки-->
   <div class="file-system__dirs">
       <div class="file-system__dirs-item" on:click={save}><i class="fa-solid fa-floppy-disk"></i></div>
       <div class="file-system__dirs-item" on:click={open}><i class="fa-solid fa-eye"></i></div>
-      <!--<div class="file-system__dirs-item"><i class="fa-solid fa-pen"></i></div>-->
-      
+      <div class="file-system__dirs-item" on:click={openVideo}><i class="fa-solid fa-film"></i></div>
       <div class="file-system__dirs-item" on:click={rename}><i class="fa-solid fa-file-signature"></i></div>
       <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
   </div>
 </div>
+
+
 
 <style scoped>
 

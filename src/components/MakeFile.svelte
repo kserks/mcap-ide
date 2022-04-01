@@ -24,19 +24,25 @@ async function createFile(){
   catch (err){
       console.error(err);
   }
-   
 }
 
 
-function add (){
+function apply (){
   if($current.target==='') return;
+
   if(fileName===''&&dirName!==''){
-      $root = dirName;
+      if($current.id!==''){
+        $root = $current.id+'/'+dirName;
+      }
+      else{
+        $root = dirName;
+      }
       dirName = '';
-      emit('selectTarget')
+      emit('selectTarget');
   }
-  else{
+  if(fileName!==''){
     createFile();
+    dirName = '';
   }
 }
 
@@ -44,9 +50,9 @@ function add (){
 </script>
 
 <div class="file-system__dirs make-file">
-    <input type="text" class="file-system__root" bind:value={dirName} />
-    <input type="text" class="file-system__file" placeholder="{$current.name}" bind:value={fileName} />
-    <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={add}></i>
+    <input type="text" class="file-system__root"  placeholder="{$current.path}" bind:value={dirName} />
+    <input type="text" class="file-system__file" bind:value={fileName} />
+    <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={apply}></i>
 </div>
 
 <style scoped>

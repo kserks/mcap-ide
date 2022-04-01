@@ -7,6 +7,7 @@ html, body {
 	height: 100%;
 }
 
+
 body {
 	color: #333;
 	margin: 0;
@@ -16,7 +17,7 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: #556;
+	background-color: #2F3129;
 	flex-direction: column;
 }
 .console{
@@ -128,4 +129,48 @@ input[type="text"]{
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
+}
+
+.active-item{
+  color: skyblue;
+}
+
+
+/**
+ * video-js
+ */
+.vjs-time-tooltip,
+.vjs-mouse-display,
+.vjs-picture-in-picture-control,
+.vjs-fullscreen-control,
+.vjs-big-play-button{
+	display: none !important;
+}
+.vjs-control-bar {
+	display: flex !important;
+	visibility: visible !important;
+  opacity: 0.5 !important;
+  transition: 0s !important;
+  background-color: #2F3129 !important;
+  position: fixed !important;
+  
+}
+.vjs-volume-control{
+	display: none !important;
+}
+.vjs-hover{
+	width: auto !important;
+}
+
+.file-viewer.video-player-show #editor{
+	z-index: 9999;
+	width: 100.2% !important;
+	height: 95% !important;
+	background-color: rgba(0,0,0, 0.5) !important;
+}
+
+
+
+.file-viewer.video-player-show .video-wrapper{
+	display: block !important;
 }

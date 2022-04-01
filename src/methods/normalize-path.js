@@ -8,7 +8,7 @@ export default function (path, current){
              .replace(/^\//g, '');
 
   /*if(/\d+/g.test(current.id)){
-    return '%ID%'+p;
+    return current.id+'/'+p;
   }*/
   return p;
 }

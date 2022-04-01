@@ -1,38 +1,37 @@
 
 <script>
-import openFile from "../methods/open-file.js";
+import { openFile } from "../methods/open-file.js";
 import { current } from "../store/common.js";
 import normalizePath from '../methods/normalize-path.js';
 
 
 export let tree;
-
-const _expansionState = {
-
-}
-
 $:name = tree.name;
 $:children = tree.children;
 $:isDir = tree.isDir;
 
 
+const _expansionState = {};
+
 let expanded = _expansionState[name] || false;
 function toggleExpansion() {
     expanded = _expansionState[name] = !expanded;
+    // ?? эта штука не очень то и работает вроде
+    // когда кликаю по каталагу он текущим не становится
+    // и если создать файл, то он его создат в предыдущем текущем каталоге.
+    // текущий каталог задается только тогда, когда я выберу в нем файл
     $current.path = normalizePath(tree.path, $current);
 
 }
 
 function selectFile (name){
-
+  
   $current.name = name;
   /**
    * Убираю лишние части пути, что бы получить валидный путь для модуля mcef.Query
    */
   $current.path = normalizePath(tree.path, $current);
 
-  // console.log($current.name)
-  
   openFile(editor, $current);
 }
 
@@ -48,8 +47,7 @@ function selectFile (name){
           <span  on:click={toggleExpansion}>
 
             <span class="arrow fa-solid fa-folder"></span>
-            <span class="file-item">{name}</span>
-            <span style="color: skyblue" > {children.length}</span>
+            <span class="dir-item">{name}</span>
           </span>
           {#if expanded}
             {#each children as child}
@@ -77,10 +75,7 @@ ul {
     user-select: none;
 
 }
-.no-arrow {
-  /*padding-left: 1.0rem;*/
 
-}
 .arrow {
     cursor: pointer;
     display: inline-block;
@@ -90,15 +85,10 @@ ul li{
   margin: 0;
   padding: 0;
 }
-ul li >span:hover{
+ul li .dir-item:hover,
+ul li .file-item:hover{
   color: #66D9EF;
   cursor: pointer;
-}
-.file-item{
-  
-}
-.active-item{
-  color: red;
 }
 
 </style>

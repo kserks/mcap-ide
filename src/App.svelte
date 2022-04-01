@@ -2,13 +2,13 @@
 import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
 
-import { current, root } from './store/common.js';
+import { current, root, showVideoPlayer } from './store/common.js';
 //import readDir from './methods/read-dir.js';
 import Editor from './components/Editor.svelte';
 import Editor_2 from './components/Editor_2.svelte';
 import MakeFile from './components/MakeFile.svelte';
 import Controls from './components/Controls.svelte';
-
+import VideoPlayer from './components/VideoPlayer.svelte';
 import listToTree from './utils/list-to-tree.js';
 import * as fs from './methods/fs.js';
 
@@ -50,6 +50,7 @@ async function readDir (dirName, pathname){
 	let lastPathChunk = dir.split('/').pop();
 
 	let res = await fs.readDir(dir);
+
 	/**
 	 * Добавляем свойство children к каждому элементу массива
 	 * Это требуется для функции listToTree
@@ -59,7 +60,7 @@ async function readDir (dirName, pathname){
 						return i;
 				});
 
-	const children = listToTree(res, dirName);
+	const children = listToTree(res, lastPathChunk);
 
 	tree = { 
 		name: lastPathChunk, 
@@ -73,7 +74,8 @@ async function readDir (dirName, pathname){
 function resetSelectedDir(){
 	$current.path = '';
 	$root = '';
-	//forceUpdate();	
+
+	forceUpdate();	
 }
 
 $:cct_id = '';
@@ -81,23 +83,34 @@ $:cct_id = '';
 function selectDir(dirName){
 	resetSelectedDir();
 	$current.target = dirName;
-	if($current.target==='CCT'){
-			if(/\d+/g.test(cct_id)){
-    			if(cct_id!==''){
-    				$current.id = cct_id;
-    				tree = readDir($current.target, $root);
-    			}
-  		}
-
-	}
-	else{
-		readDir($current.target, $root);
-
-	}
+	if($current.target==='CCT') return;
 	
+	readDir($current.target, $root);
+	// Убираем значение из поля CCT, если выбран другой каталог
+	cct_id = '';
+	/**
+	 * Навешиваем обработчик кликов на файлы
+	 * Делается это для того, что бы подсветить цветом выбранный файл
+	 * Это нельзя сделать в компоненте Tree из за того, что он создает сам себя
+	 * если у него есть дочерние элементы. Т.е. каждый узел, это компонент Tree 
+	 * setTimeout - нужен вкачестве задержки, пока дерево не нарисуется. Потом
+	 * навешивается слушатель событий.
+	 */
+	setTimeout(initSelectionActiveFile, 200);
 }
 
-selectDir('AM');
+
+function selectDirCCT(){
+			resetSelectedDir();
+			// если id комньютера не цифра, то ничего не делаем
+			if(!/\d+/g.test(cct_id)) return;
+
+    	$current.id = cct_id;
+    	$root = cct_id;
+    	tree = readDir($current.target, $root);
+  		
+
+}
 
 
 </script>
@@ -110,7 +123,7 @@ selectDir('AM');
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WDS')}}>WDS</div>
-							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={cct_id}/></div>
+							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={cct_id} on:keyup={selectDirCCT}/></div>
 					</div>
 					{#if operator}
 					<div class="file-system__dirs">
@@ -121,16 +134,17 @@ selectDir('AM');
 							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('NJS')}}>NJS</div>
 					</div>
 					{/if}
-					<MakeFile on:makeFile={readDir($current.target)} on:selectTarget={readDir($current.target)}/>
+					<MakeFile on:makeFile={ readDir($current.target, $root) } on:selectTarget={readDir($current.target, $root)}/>
 					<div class="file-system__tree">
 							{#if visible}
 									<Tree {tree}/>
 							{/if}
 					</div>
-					<Controls on:controlChange={readDir($current.target)}/>
+					<Controls on:controlChange={ readDir($current.target, $root) }/>
 			</aside>
 			<!--editor-->
-			<div class="file-viewer">
+			<div class="file-viewer {$showVideoPlayer?'video-player-show':''}">
+					<VideoPlayer/>
 					<Editor/>
 			</div>
 
@@ -145,13 +159,9 @@ selectDir('AM');
 main{
 	color: #8F908A;
 	background-color: #2F3129;
-	width: 100vw;
-	height: 100vh;
-	padding: 20px;
-/*
-	width: 1024px;
-	height: 750px;
-*/
+	width: 1150px;
+	height: 800px;
+	/*padding: 20px;*/
 	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
 }
 .content-wrapper{
@@ -165,16 +175,10 @@ main{
 .file-system{
 	width: 25%;
 	height: 100%;
-	background-color: var(--theme-bg);
 	display: flex;
 	flex-direction: column;
 	padding: 5px;
 }
-/*
-.file-system__dirs.operator{
-
-}*/
-
 
 .file-system__dirs-item.cct{
 	width: 112px;
@@ -190,7 +194,6 @@ main{
 
 .file-system__tree{
 	display: flex;
-	flex-direction: #66D9EF;
 	flex: 1;
 	overflow: auto;
 }
@@ -202,12 +205,15 @@ main{
 .file-viewer{
 	width: 75%;
 	height: 100%;
-	background-color: var(--theme-bg);
+	background-color: #2F3129;
 	position: relative;
+
 }
+
 
 .content-wrapper{
 	border: 1px solid #222;
+
 }
 
 /**
@@ -218,7 +224,6 @@ main{
 	border: 1px solid #222;
 	height: 30%;
 	width: 100%;
-	background-color: var(--theme-bg);
 	overflow: auto;
 	margin-top: 5px;
 	position: relative;

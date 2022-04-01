@@ -47,11 +47,10 @@ export function readFile(param){
       "dts": getTime(),
       "ars": true,
       "player":"",
-      "uuid":""       
+      "uuid":""
   };
 
-  let str = `IDE_${JSON.stringify(data)}`
-
+  let str = `IDE_${JSON.stringify(data)}`;
   return query(str);
 
 }
@@ -77,8 +76,7 @@ export async function readDir(dirName){
   "player":"",
   "uuid":""       
 }
-  let str = `IDE_${JSON.stringify(data)}`
-
+  let str = `IDE_${JSON.stringify(data)}`;
   return await query(str);
 }
 
@@ -100,7 +98,7 @@ export function remove(param){
         "dts": getTime(),
         "ars": true,
         "player":"",
-        "uuid":""       
+        "uuid":"" 
   }
   let str = `IDE_${JSON.stringify(data)}`;
 
