@@ -153,7 +153,30 @@ input[type="text"]{
   transition: 0s !important;
   background-color: #2F3129 !important;
   position: fixed !important;
+  right: unset !important;
+  left: calc(50% - 575px)!important;
+  width: 700px !important;
+  bottom: 10px !important;
+
   
+}
+
+.vjs-set-video{
+	position: fixed;
+	bottom: 10px;
+  right: calc(50% - 575px);
+  width: 450px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vjs-set-video input{
+	width: 87% !important;
+	background-color:  rgba(0,0,0,0.05);
+	color: silver;
+}
+.vjs-set-video input:focus{
+	background-color: rgba(255,255,255,0.1);
 }
 .vjs-volume-control{
 	display: none !important;
@@ -164,8 +187,8 @@ input[type="text"]{
 
 .file-viewer.video-player-show #editor{
 	z-index: 9999;
-	width: 100.2% !important;
-	height: 95% !important;
+	/*width: 100.2% !important;*/
+
 	background-color: rgba(0,0,0, 0.5) !important;
 }
 

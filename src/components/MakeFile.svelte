@@ -51,7 +51,7 @@ function apply (){
 
 <div class="file-system__dirs make-file">
     <input type="text" class="file-system__root"  placeholder="{$current.path}" bind:value={dirName} />
-    <input type="text" class="file-system__file" bind:value={fileName} />
+    <input type="text" class="file-system__file" bind:value={fileName} placeholder="newfile.txt" />
     <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={apply}></i>
 </div>
 

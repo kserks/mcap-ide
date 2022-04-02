@@ -6,10 +6,6 @@ import saveFile from '../methods/save-file.js';
 
 
 
-
-
-
-
 onMount(()=>{
 
   const editor = ace.edit("editor", { selectionStyle: "text" });
@@ -19,7 +15,6 @@ onMount(()=>{
   editor.setOption("displayIndentGuides", false);
   editor.getSession()
   editor.session.setMode("ace/mode/text");
-
   window.editor = editor;
 })
 
@@ -31,7 +26,7 @@ onMount(()=>{
 
 <style scoped="">
 #editor{
-  width: 100%;
+  width: 100.2%;
   height: 100%;
 }
 </style>

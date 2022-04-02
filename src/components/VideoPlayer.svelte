@@ -14,7 +14,7 @@ let options = {
 
 
 
-window.player = videojs('my-player', options);
+window.player = videojs('video-player', options);
 
 //player.src('../video/oceans.webm');
 
@@ -24,7 +24,7 @@ window.player = videojs('my-player', options);
 </script>
 
 <div class="video-wrapper">
-  <video id="my-player" class="video-js"></video>
+  <video id="video-player" class="video-js"></video>
 </div>
 
 <style>
@@ -35,7 +35,8 @@ window.player = videojs('my-player', options);
   top: 0;
   width: 820px;
   height: 100%;
-  display: none;
+  /*display: none;*/
+  display: block;
 }
 
 .video-js{

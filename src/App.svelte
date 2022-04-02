@@ -9,6 +9,7 @@ import Editor_2 from './components/Editor_2.svelte';
 import MakeFile from './components/MakeFile.svelte';
 import Controls from './components/Controls.svelte';
 import VideoPlayer from './components/VideoPlayer.svelte';
+import SetVideo from './components/SetVideo.svelte';
 import listToTree from './utils/list-to-tree.js';
 import * as fs from './methods/fs.js';
 
@@ -16,6 +17,7 @@ import * as fs from './methods/fs.js';
 /**
  * force update
  * Перерисовка компонента
+ * Скрываем и показываем его снова
  */
 
 let operator = false;
@@ -116,6 +118,7 @@ function selectDirCCT(){
 </script>
 
 <main  style="background-color: #272822">
+	<SetVideo/>
 	<div class="content-wrapper">
 			<aside class="file-system">
 

@@ -71,26 +71,7 @@ function open (){
   openFile(editor_2, $current);
 }
 
-/**
- * set Video
- * webm || ogg
- */
 
-let videoOpen = false;
-let videoSource = '';
-function openVideo (){
-  videoOpen = !videoOpen;
-}
-function setVideo (){
-  if(videoSource===''){
-    $showVideoPlayer = false;
-    openVideo = false;
-    return;
-  }
-  $showVideoPlayer = true;
-  player.src(videoSource);
-  videoOpen = false;
-}
 </script>
 
 <div>
@@ -99,15 +80,11 @@ function setVideo (){
       <input type="text" bind:value={newName}>
       <i class="fa-solid fa-floppy-disk"  on:click={saveNewName}></i>
   </div>
-  <div class="input-wrapper  { videoOpen?'show':'' }">
-      <input type="text" bind:value={videoSource}>
-      <i class="fa-solid fa-floppy-disk"  on:click={setVideo}></i>
-  </div>
+
   <!--кнопки-->
   <div class="file-system__dirs">
       <div class="file-system__dirs-item" on:click={save}><i class="fa-solid fa-floppy-disk"></i></div>
       <div class="file-system__dirs-item" on:click={open}><i class="fa-solid fa-eye"></i></div>
-      <div class="file-system__dirs-item" on:click={openVideo}><i class="fa-solid fa-film"></i></div>
       <div class="file-system__dirs-item" on:click={rename}><i class="fa-solid fa-file-signature"></i></div>
       <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
   </div>
