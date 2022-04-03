@@ -9,7 +9,7 @@ import Editor_2 from './components/Editor_2.svelte';
 import MakeFile from './components/MakeFile.svelte';
 import Controls from './components/Controls.svelte';
 import VideoPlayer from './components/VideoPlayer.svelte';
-import SetVideo from './components/SetVideo.svelte';
+
 import listToTree from './utils/list-to-tree.js';
 import * as fs from './methods/fs.js';
 
@@ -72,24 +72,56 @@ async function readDir (dirName, pathname){
 	}	
 
 }
+/**
+ * Директории
+ */
+const clientDirs = [ 
+	{ name: 'CT', active: false }, 
+	{ name: 'AM', active: false }, 
+	{ name: 'WDS', active: false }, 
+	{ name: 'CCT', active: false },
+];
 
-function resetSelectedDir(){
+const serverDirs = [ 
+	{ name: 'MC', active: false }, 
+	{ name: 'SRV', active: false }, 
+	{ name: 'WOL', active: false }, 
+	{ name: 'WEB', active: false },
+	{ name: 'NJS', active: false },
+];
+
+
+
+function resetSelectedDir(index){
+	tree = { name: '.', children: [], isDir: true, path: ''}
 	$current.path = '';
 	$root = '';
-
+	/**
+	 * Пробегаемся по массиву с папками и сбрасываем active
+	 * что бы снять выделение и предыдущей выбранной папки
+	 */
+	clientDirs.map((dir, i)=>{
+				clientDirs[i].active = false;
+	})
+	/**
+	 * Перерисовываем компонент, что бы открытые папки закрылись
+	 */
 	forceUpdate();	
 }
 
-$:cct_id = '';
 
-function selectDir(dirName){
-	resetSelectedDir();
+
+
+
+function selectDir(dirName, index){
+	resetSelectedDir(index);
+	// выделяем цветом активную папку
+	clientDirs[index].active = true;
 	$current.target = dirName;
 	if($current.target==='CCT') return;
 	
 	readDir($current.target, $root);
-	// Убираем значение из поля CCT, если выбран другой каталог
-	cct_id = '';
+	$current.id = '';
 	/**
 	 * Навешиваем обработчик кликов на файлы
 	 * Делается это для того, что бы подсветить цветом выбранный файл
@@ -102,39 +134,25 @@ function selectDir(dirName){
 }
 
 
-function selectDirCCT(){
-			resetSelectedDir();
-			// если id комньютера не цифра, то ничего не делаем
-			if(!/\d+/g.test(cct_id)) return;
-
-    	$current.id = cct_id;
-    	$root = cct_id;
-    	tree = readDir($current.target, $root);
-  		
-
-}
 
 
 </script>
 
-<main  style="background-color: #272822">
-	<SetVideo/>
+<main>
+
 	<div class="content-wrapper">
 			<aside class="file-system">
 
 					<div class="file-system__dirs">
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('CT')}}>CT</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('AM')}}>AM</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WDS')}}>WDS</div>
-							<div class="file-system__dirs-item cct" style="width: 112px;" on:mousedown={()=>{selectDir('CCT')}}><span style="padding-right: 10px;">CCT</span><input type="text" placeholder="id" bind:value={cct_id} on:keyup={selectDirCCT}/></div>
+							{#each clientDirs as dir, index}
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectDir(dir.name, index)}}>{dir.name}</div>
+							{/each}
 					</div>
 					{#if operator}
 					<div class="file-system__dirs">
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('MC')}}>MC</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('SRV')}}>SRV</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WOL')}}>WOL</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('WEB')}}>WEB</div>
-							<div class="file-system__dirs-item" on:mousedown={()=>{selectDir('NJS')}}>NJS</div>
+							{#each serverDirs as dir, index}	
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectDir(dir.name, index)}}>{dir.name}</div>
+							{/each}
 					</div>
 					{/if}
 					<MakeFile on:makeFile={ readDir($current.target, $root) } on:selectTarget={readDir($current.target, $root)}/>
@@ -161,7 +179,7 @@ function selectDirCCT(){
 
 main{
 	color: #8F908A;
-	background-color: #2F3129;
+	background-color: #272822;
 	width: 1150px;
 	height: 800px;
 	/*padding: 20px;*/
@@ -183,17 +201,7 @@ main{
 	padding: 5px;
 }
 
-.file-system__dirs-item.cct{
-	width: 112px;
-}
-.file-system__dirs-item.cct span{
-	padding-right: 10px;
-}
-.file-system__dirs-item.cct input{
-	width: 60px;
-	height: 25px;
-  text-align: center;
-}
+
 
 .file-system__tree{
 	display: flex;
@@ -232,6 +240,10 @@ main{
 	position: relative;
 }
 
+.active-dir{
+	background-color: rgba(0,0,0,0.1);
+	color: #66D9EF;
+}
 
 
 </style>

@@ -4,7 +4,7 @@
 function initSelectionActiveFile(){
 
       function removeSelection (){
-          let nodes = document.querySelectorAll('#tree_files li span.file-item');
+          let nodes = document.querySelectorAll('.file-system__tree li span.file-item');
 
           nodes.forEach(item=>{
             item.classList.remove('active-item')
@@ -12,7 +12,7 @@ function initSelectionActiveFile(){
       }
 
 
-      let tree = document.querySelector('#tree_files');
+      let tree = document.querySelector('.file-system__tree');
       function handler (e){
 
           if(e.target.classList.contains('file-item')){

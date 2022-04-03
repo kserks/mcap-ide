@@ -1,7 +1,7 @@
 <script>
-
+import { splitVideoScreen } from '../store/common.js';
 import { onMount } from 'svelte';
-
+import SetVideo from './SetVideo.svelte';
 
 onMount(()=>{
 
@@ -23,8 +23,11 @@ window.player = videojs('video-player', options);
 
 </script>
 
-<div class="video-wrapper">
-  <video id="video-player" class="video-js"></video>
+<div class="video-wrapper {$splitVideoScreen?'split-video-screen':''}">
+  <video id="video-player" class="video-js">
+
+  </video>
+  <SetVideo/>
 </div>
 
 <style>
@@ -43,5 +46,9 @@ window.player = videojs('video-player', options);
   width: 100%;
   height: 100%;
 }
-
+.split-video-screen{
+  width: 50%;
+  right: 0;
+  left: unset;
+}
 </style>

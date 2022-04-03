@@ -117,11 +117,12 @@ input[type="text"]{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 50px;
+	width: 65px;
 }
 .file-system__dirs-item:hover{
 	background-color: rgba(0,0,0,0.1);
 	color: #66D9EF;
+  cursor: pointer;
 }
 
 .file-system__dirs{
@@ -155,7 +156,7 @@ input[type="text"]{
   position: fixed !important;
   right: unset !important;
   left: calc(50% - 575px)!important;
-  width: 700px !important;
+  width: 575px !important;
   bottom: 10px !important;
 
   
@@ -165,13 +166,13 @@ input[type="text"]{
 	position: fixed;
 	bottom: 10px;
   right: calc(50% - 575px);
-  width: 450px;
+  width: 575px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .vjs-set-video input{
-	width: 87% !important;
+	width: 75% !important;
 	background-color:  rgba(0,0,0,0.05);
 	color: silver;
 }

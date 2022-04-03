@@ -1,5 +1,6 @@
 <script>
-import { showVideoPlayer } from '../store/common.js';
+import { showVideoPlayer, splitVideoScreen } from '../store/common.js';
+
 /**
  * set Video
  * webm || ogg
@@ -11,16 +12,25 @@ let videoSource = '';
 function setVideo (){
   if(videoSource===''){
     $showVideoPlayer = false;
+    return;
   }
   $showVideoPlayer = true;
  
   player.src(videoSource);
-/*
+
   player.on('error', function() {
-    alert(player.error())
+    videoSource = '';
   });
-*/
+
 }
+
+
+function splitVideo (){
+
+  $splitVideoScreen = !$splitVideoScreen;
+}
+
+
 </script>
 
 
@@ -29,10 +39,17 @@ function setVideo (){
       <div class=" file-system__dirs-item">
           <i class="fa-solid fa-angle-right"  on:click={setVideo}></i>
       </div>
+      <div class="file-system__dirs-item">
+          <i class="fa-solid fa-adjust"  on:click={splitVideo}></i>
+      </div>  
 </div>
 
-<style>
+<style scoped>
 
+.fa-adjust{
+  transform: rotate(180deg);
+  opacity: 0.7;
+}
 
 
 </style>

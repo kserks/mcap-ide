@@ -8,7 +8,7 @@ const emit = createEventDispatcher();
 
 let fileName = '';
 let dirName = '';
-
+let cct_id = '';
 async function createFile(){
   try{
       let res = await fs.writeFile({
@@ -47,11 +47,24 @@ function apply (){
 }
 
 
+
+
+function selectDirCCT(){
+      
+      // если id комньютера не цифра, то ничего не делаем
+      if(!/\d+/g.test($current.id)) return;
+
+
+      $root = $current.id
+      emit('selectTarget');
+
+}
 </script>
 
 <div class="file-system__dirs make-file">
-    <input type="text" class="file-system__root"  placeholder="{$current.path}" bind:value={dirName} />
-    <input type="text" class="file-system__file" bind:value={fileName} placeholder="newfile.txt" />
+    <input type="text" class="file-system__id" placeholder="id" bind:value={$current.id} on:keyup={selectDirCCT}/>
+    <input type="text" class="file-system__root"  placeholder="root/" bind:value={dirName} />
+    <input type="text" class="file-system__file" bind:value={fileName} placeholder="new.txt" />
     <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={apply}></i>
 </div>
 
@@ -63,29 +76,21 @@ function apply (){
   margin-bottom: 5px;
 }
 
-.file-system__dirs-item{
-  background-color: #2F3129;
-  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.2);
-  padding: 3px 5px;
-  user-select: none;
-  cursor: pointer;
-  border-radius: 4px;
-  min-width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-}
+
 /**
  * input
  */
-
+.file-system__id{
+  width: 65px;
+  text-align: center;
+}
 .file-system__root{
-  width: 40%;
+  width: 65px;
+  text-align: center;
 }
 .file-system__file{
-  width: 40%;
+  width: 65px;
+  text-align: center;
 
 }
 
