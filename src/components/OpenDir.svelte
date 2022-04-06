@@ -8,12 +8,12 @@ const emit = createEventDispatcher();
 
 let fileName = '';
 let dirName = '';
-let cct_id = '';
+
 async function createFile(){
   try{
       let res = await fs.writeFile({
                             "target": $current.target,
-                            "id": "",
+                            "id": $current.id,
                             "path": $current.path,
                             "name": fileName,
                             "data": ""
@@ -42,13 +42,14 @@ function apply (){
     
   }
   else{
+        //$current.id = '';
         if(dirName!==''){
             $root = dirName;
             emit('readDir');
 
         }
         else{
-            $root = '';
+            //$root = '';
             emit('readDir');
         }    
   }

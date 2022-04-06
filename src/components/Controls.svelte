@@ -39,7 +39,7 @@ async function saveNewName (){
                 "name": $current.name,
                 "data": newName
             });
-      emit('controlChange');
+      emit('readDir');
       //openFile(editor, $current)
     }
     catch(e){
