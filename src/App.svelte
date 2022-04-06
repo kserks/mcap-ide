@@ -2,17 +2,49 @@
 import { onMount } from 'svelte';
 import Tree from './components/Tree.svelte';
 
-import { current, root, showVideoPlayer } from './store/common.js';
+import { current, root, ui } from './store/common.js';
 //import readDir from './methods/read-dir.js';
 import Editor from './components/Editor.svelte';
 import Editor_2 from './components/Editor_2.svelte';
-import MakeFile from './components/MakeFile.svelte';
+import OpenDir from './components/OpenDir.svelte';
 import Controls from './components/Controls.svelte';
 import VideoPlayer from './components/VideoPlayer.svelte';
 
 import listToTree from './utils/list-to-tree.js';
 import * as fs from './methods/fs.js';
 
+
+
+/**
+ * Директории
+ */
+/**
+	*	На клиенте:
+	*	mc - корневой каталоге minecraft
+	*	ct - каталог файлов ChatTrigger
+	*	am - каталог файлов AdvansedMacros
+	*
+ 	*	На сервере:
+ 	*	srv - корневой каталоге minecraft
+ 	*	cct - каталог файлов ComputerCraft
+ 	*	wol - каталог файлов WizardOfLua
+ 	*	wds - каталог файлов WebDisplayServers
+ 	*	web - каталог файлов OpenRestyWebServer
+ 	*	njs - каталог файлов NodeJS приложений
+  */
+const clientDirs = [ 
+	{ name: 'CT', active: false }, 
+	{ name: 'AM', active: false }, 
+	{ name: 'WDS', active: false }, 
+	{ name: 'CCT', active: false },
+];
+
+const serverDirs = [ 
+	{ name: 'MC', active: false }, 
+	{ name: 'WOL', active: false },
+	{ name: 'WEB', active: false },
+	{ name: 'NJS', active: false },
+];
 
 /**
  * force update
@@ -36,18 +68,17 @@ function forceUpdate() {
  */
 let tree = {};
 
-async function readDir (dirName, pathname){
+async function readDir (targetDir, pathname){
 	/**
 	 * Нам требуется как путь к директории для чтения
 	 * так и последняя директория этого пути.
 	 */
 	let dir;
 	if(pathname===''){
-		dir = dirName;
+		dir = targetDir;
 	}
 	else{
-		dir = dirName +'/'+ pathname;
-
+		dir = targetDir +'/'+ pathname;
 	}
 	let lastPathChunk = dir.split('/').pop();
 
@@ -70,32 +101,25 @@ async function readDir (dirName, pathname){
 		path: '', 
 		children 
 	}	
-
+	/**
+	 * Навешиваем обработчик кликов на файлы
+	 * Делается это для того, что бы подсветить цветом выбранный файл
+	 * Это нельзя сделать в компоненте Tree из за того, что он создает сам себя
+	 * если у него есть дочерние элементы. Т.е. каждый узел, это компонент Tree 
+	 * setTimeout - нужен вкачестве задержки, пока дерево не нарисуется. Потом
+	 * навешивается слушатель событий.
+	 */
+	setTimeout(initSelectionActiveFile, 300);
 }
-/**
- * Директории
- */
-const clientDirs = [ 
-	{ name: 'CT', active: false }, 
-	{ name: 'AM', active: false }, 
-	{ name: 'WDS', active: false }, 
-	{ name: 'CCT', active: false },
-];
-
-const serverDirs = [ 
-	{ name: 'MC', active: false }, 
-	{ name: 'SRV', active: false }, 
-	{ name: 'WOL', active: false }, 
-	{ name: 'WEB', active: false },
-	{ name: 'NJS', active: false },
-];
 
 
 
 function resetSelectedDir(index){
-	tree = { name: '.', children: [], isDir: true, path: ''}
+	tree = { }
 	$current.path = '';
 	$root = '';
+	$current.id = '';
+	editor.setValue('');
 	/**
 	 * Пробегаемся по массиву с папками и сбрасываем active
 	 * что бы снять выделение и предыдущей выбранной папки
@@ -110,28 +134,14 @@ function resetSelectedDir(index){
 }
 
 
+function selectTarget (dirName, index){
+		resetSelectedDir(index);
+		// выделяем цветом активную папку
+		clientDirs[index].active = true;
+		$current.target = dirName;
 
-
-
-function selectDir(dirName, index){
-	resetSelectedDir(index);
-	// выделяем цветом активную папку
-	clientDirs[index].active = true;
-	$current.target = dirName;
-	if($current.target==='CCT') return;
-	
-	readDir($current.target, $root);
-	$current.id = '';
-	/**
-	 * Навешиваем обработчик кликов на файлы
-	 * Делается это для того, что бы подсветить цветом выбранный файл
-	 * Это нельзя сделать в компоненте Tree из за того, что он создает сам себя
-	 * если у него есть дочерние элементы. Т.е. каждый узел, это компонент Tree 
-	 * setTimeout - нужен вкачестве задержки, пока дерево не нарисуется. Потом
-	 * навешивается слушатель событий.
-	 */
-	setTimeout(initSelectionActiveFile, 200);
 }
+
 
 
 
@@ -145,26 +155,26 @@ function selectDir(dirName, index){
 
 					<div class="file-system__dirs">
 							{#each clientDirs as dir, index}
-									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectDir(dir.name, index)}}>{dir.name}</div>
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index)}}>{dir.name}</div>
 							{/each}
 					</div>
 					{#if operator}
 					<div class="file-system__dirs">
 							{#each serverDirs as dir, index}	
-									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectDir(dir.name, index)}}>{dir.name}</div>
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index)}}>{dir.name}</div>
 							{/each}
 					</div>
 					{/if}
-					<MakeFile on:makeFile={ readDir($current.target, $root) } on:selectTarget={readDir($current.target, $root)}/>
+					<OpenDir on:readDir={readDir($current.target, $root)}/>
 					<div class="file-system__tree">
 							{#if visible}
 									<Tree {tree}/>
 							{/if}
 					</div>
-					<Controls on:controlChange={ readDir($current.target, $root) }/>
+					<Controls on:readDir={ readDir($current.target, $root) }/>
 			</aside>
 			<!--editor-->
-			<div class="file-viewer {$showVideoPlayer?'video-player-show':''}">
+			<div class="file-viewer {$ui.showVideoPlayer?'video-player-show':''}">
 					<VideoPlayer/>
 					<Editor/>
 			</div>

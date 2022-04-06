@@ -1,5 +1,5 @@
 <script>
-import { splitVideoScreen } from '../store/common.js';
+import { ui } from '../store/common.js';
 import { onMount } from 'svelte';
 import SetVideo from './SetVideo.svelte';
 
@@ -16,14 +16,13 @@ let options = {
 
 window.player = videojs('video-player', options);
 
-//player.src('../video/oceans.webm');
 
 })
 
 
 </script>
 
-<div class="video-wrapper {$splitVideoScreen?'split-video-screen':''}">
+<div class="video-wrapper {$ui.splitVideoScreen?'split-video-screen':''}">
   <video id="video-player" class="video-js">
 
   </video>

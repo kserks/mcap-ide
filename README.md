@@ -117,3 +117,21 @@ IDE_{
   "ars": true      
 }
 ```
+
+
+```js
+/**
+  * На клиенте:
+  * mc - корневой каталоге minecraft
+  * ct - каталог файлов ChatTrigger
+  * am - каталог файлов AdvansedMacros
+  *
+  * На сервере:
+  * srv - корневой каталоге minecraft
+  * cct - каталог файлов ComputerCraft
+  * wol - каталог файлов WizardOfLua
+  * wds - каталог файлов WebDisplayServers
+  * web - каталог файлов OpenRestyWebServer
+  * njs - каталог файлов NodeJS приложений
+  */
+```

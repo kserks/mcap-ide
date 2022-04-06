@@ -19,7 +19,7 @@ async function createFile(){
                             "data": ""
                       });
       fileName = '';
-      emit('makeFile');
+      emit('readDir');
   }
   catch (err){
       console.error(err);
@@ -28,43 +28,47 @@ async function createFile(){
 
 
 function apply (){
+
   if($current.target==='') return;
-
-  if(fileName===''&&dirName!==''){
-      if($current.id!==''){
-        $root = $current.id+'/'+dirName;
-      }
-      else{
-        $root = dirName;
-      }
-      dirName = '';
-      emit('selectTarget');
+  if($current.target==='CCT'&&$current.id==='') return;
+  if($current.target==='CCT'&&$current.id!==''){
+        if(dirName===''){
+            $root = $current.id;
+        }
+        else{
+            $root = $current.id+'/'+dirName;
+        }
+        emit('readDir');
+    
   }
+  else{
+        if(dirName!==''){
+            $root = dirName;
+            emit('readDir');
+
+        }
+        else{
+            $root = '';
+            emit('readDir');
+        }    
+  }
+
+
   if(fileName!==''){
+
     createFile();
-    dirName = '';
+
   }
+  dirName = '';
 }
 
 
-
-
-function selectDirCCT(){
-      
-      // если id комньютера не цифра, то ничего не делаем
-      if(!/\d+/g.test($current.id)) return;
-
-
-      $root = $current.id
-      emit('selectTarget');
-
-}
 </script>
 
-<div class="file-system__dirs make-file">
-    <input type="text" class="file-system__id" placeholder="id" bind:value={$current.id} on:keyup={selectDirCCT}/>
-    <input type="text" class="file-system__root"  placeholder="root/" bind:value={dirName} />
-    <input type="text" class="file-system__file" bind:value={fileName} placeholder="new.txt" />
+<div class="file-system__dirs">
+    <input type="text" class="file-system__id" placeholder="id" bind:value={$current.id}/>
+    <input type="text" class="file-system__root"  placeholder="каталог" bind:value={dirName} />
+    <input type="text" class="file-system__file" bind:value={fileName} placeholder="файл" />
     <i class="file-system__dirs-item fa-solid fa-plus" on:mousedown={apply}></i>
 </div>
 

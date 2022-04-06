@@ -12,5 +12,8 @@ export let current = writable({
 export let language = writable('text');
 export let root = writable('');
 
-export let showVideoPlayer = writable(false);
-export let splitVideoScreen = writable(false);
+
+export let ui = writable({
+  showVideoPlayer: false,
+  splitVideoScreen: false
+})

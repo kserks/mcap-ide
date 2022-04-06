@@ -1,5 +1,5 @@
 <script>
-import { showVideoPlayer, splitVideoScreen } from '../store/common.js';
+import { ui } from '../store/common.js';
 
 /**
  * set Video
@@ -11,23 +11,26 @@ let videoSource = '';
 
 function setVideo (){
   if(videoSource===''){
-    $showVideoPlayer = false;
+    $ui.showVideoPlayer = false;
     return;
   }
-  $showVideoPlayer = true;
+  $ui.showVideoPlayer = true;
  
   player.src(videoSource);
 
   player.on('error', function() {
-    videoSource = '';
-  });
 
+
+    $ui.showVideoPlayer = false;
+    
+    //$ui.showVideoPlayer = true;
+  });
 }
 
 
 function splitVideo (){
 
-  $splitVideoScreen = !$splitVideoScreen;
+  $ui.splitVideoScreen = !$ui.splitVideoScreen;
 }
 
 
@@ -36,11 +39,11 @@ function splitVideo (){
 
 <div class="input-wrapper vjs-set-video">
       <input type="text" bind:value={videoSource} placeholder=".webm | .ogg">
-      <div class=" file-system__dirs-item">
-          <i class="fa-solid fa-angle-right"  on:click={setVideo}></i>
+      <div class=" file-system__dirs-item" on:click={setVideo}>
+          <i class="fa-solid fa-angle-right"></i>
       </div>
-      <div class="file-system__dirs-item">
-          <i class="fa-solid fa-adjust"  on:click={splitVideo}></i>
+      <div class="file-system__dirs-item" on:click={splitVideo}>
+          <i class="fa-solid fa-adjust" ></i>
       </div>  
 </div>
 

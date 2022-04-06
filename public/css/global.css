@@ -198,3 +198,6 @@ input[type="text"]{
 .file-viewer.video-player-show .video-wrapper{
 	display: block !important;
 }
+.vjs-modal-dialog-content{
+  display: none !important;
+}

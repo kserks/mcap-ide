@@ -1,6 +1,6 @@
 <script>
 
-import { current, showVideoPlayer } from '../store/common.js';
+import { current } from '../store/common.js';
 import saveFile from '../methods/save-file.js';
 import { openFile, updateMode } from "../methods/open-file.js";
 import * as fs from '../methods/fs.js';
@@ -61,7 +61,7 @@ function del (){
             "name": $current.name,
             "data": ""
       });
-      emit('controlChange');
+      emit('readDir');
       editor.setValue('');
       editor_2.setValue('');
   }
