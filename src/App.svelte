@@ -60,6 +60,16 @@ function forceUpdate() {
 }
 
 /**
+ * Проверяю является ли пользователь оператором
+ * при первой загрузке приложения
+ */
+
+onMount(async ()=>{
+	let res = await fs.readDir('');
+	operator = res.op;
+})
+
+/**
  * read dir
  */
 
@@ -83,6 +93,7 @@ async function readDir (targetDir, pathname){
 	let lastPathChunk = dir.split('/').pop();
 
 	let res = await fs.readDir(dir);
+	operator = res.op;
 
 	/**
 	 * Добавляем свойство children к каждому элементу массива

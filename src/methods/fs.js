@@ -74,7 +74,8 @@ export async function readDir(dirName){
   "dts": 1644914843,
   "ars": true,
   "player":"",
-  "uuid":""       
+  "uuid":"",
+  "op": false       
 }
   let str = `IDE_${JSON.stringify(data)}`;
   return await query(str);
