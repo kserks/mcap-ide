@@ -137,7 +137,10 @@ function resetSelectedDir(index){
 	 */
 	clientDirs.map((dir, i)=>{
 				clientDirs[i].active = false;
-	})
+	});
+	serverDirs.map((dir, i)=>{
+				serverDirs[i].active = false;
+	});
 	/**
 	 * Перерисовываем компонент, что бы открытые папки закрылись
 	 */
@@ -145,10 +148,15 @@ function resetSelectedDir(index){
 }
 
 
-function selectTarget (dirName, index){
+function selectTarget (dirName, index, mode){
 		resetSelectedDir(index);
 		// выделяем цветом активную папку
-		clientDirs[index].active = true;
+		if(mode==='client'){
+			clientDirs[index].active = true;
+		}
+		else{
+			serverDirs[index].active = true;
+		}
 		$current.target = dirName;
 
 }
@@ -166,13 +174,13 @@ function selectTarget (dirName, index){
 
 					<div class="file-system__dirs">
 							{#each clientDirs as dir, index}
-									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index)}}>{dir.name}</div>
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index, 'client')}}>{dir.name}</div>
 							{/each}
 					</div>
 					{#if operator}
 					<div class="file-system__dirs">
 							{#each serverDirs as dir, index}	
-									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index)}}>{dir.name}</div>
+									<div class="file-system__dirs-item {dir.active?'active-dir':''}" on:mousedown={()=>{selectTarget(dir.name, index, 'server')}}>{dir.name}</div>
 							{/each}
 					</div>
 					{/if}
