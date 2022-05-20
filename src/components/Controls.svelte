@@ -5,7 +5,7 @@ import saveFile from '../methods/save-file.js';
 import { openFile, updateMode } from "../methods/open-file.js";
 import * as fs from '../methods/fs.js';
 import { createEventDispatcher } from 'svelte'
-
+import copyToClipboard from '../methods/copy-to-clipboard.js';
 
 const emit = createEventDispatcher();
 
@@ -70,7 +70,23 @@ function del (){
 function open (){
   openFile(editor_2, $current);
 }
+/**
+ * COPY
+ */
+let clipBoardContainer = null;
+function copy() {
+  const data = editor.getSelectedText();
+  clipBoardContainer.value = data;
+  copyToClipboard(clipBoardContainer);
 
+}
+/**
+ * PASTE
+ */
+function paste (){
+  const cursorPosition = editor.getCursorPosition();
+  editor.session.insert(cursorPosition, clipBoardContainer.value);
+}
 
 </script>
 
@@ -87,7 +103,11 @@ function open (){
       <div class="file-system__dirs-item" on:click={open}><i class="fa-solid fa-eye"></i></div>
       <div class="file-system__dirs-item" on:click={rename}><i class="fa-solid fa-file-signature"></i></div>
       <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
+      <div class="file-system__dirs-item" on:click={copy}><i class="fa-solid fa-copy"></i></div>
+      <div class="file-system__dirs-item" on:click={paste}><i class="fa-solid fa-paste"></i></div>
+  
   </div>
+  <textarea style="display: none;" type="text" name="" bind:this={clipBoardContainer}></textarea>
 </div>
 
 
@@ -113,5 +133,7 @@ function open (){
   color: lightgreen;
 }
 
-
+.file-system__dirs-item{
+  width: 35px;
+}
 </style>
