@@ -1,6 +1,6 @@
 <script>
 
-import { current } from '../store/common.js';
+import { current, focusEditor  } from '../store/common.js';
 import saveFile from '../methods/save-file.js';
 import { openFile, updateMode } from "../methods/open-file.js";
 import * as fs from '../methods/fs.js';
@@ -75,7 +75,14 @@ function open (){
  */
 let clipBoardContainer = null;
 function copy() {
-  const data = editor.getSelectedText();
+  let data;
+  if($focusEditor){
+      data = editor_2.getSelectedText();
+  }
+  else{
+      data = editor.getSelectedText();
+  }
+
   clipBoardContainer.value = data;
   copyToClipboard(clipBoardContainer);
 
@@ -87,6 +94,7 @@ function paste (){
   const cursorPosition = editor.getCursorPosition();
   editor.session.insert(cursorPosition, clipBoardContainer.value);
 }
+
 
 </script>
 
@@ -105,7 +113,7 @@ function paste (){
       <div class="file-system__dirs-item" on:click={del}><i class="fa-solid fa-trash-can"></i></div>
       <div class="file-system__dirs-item" on:click={copy}><i class="fa-solid fa-copy"></i></div>
       <div class="file-system__dirs-item" on:click={paste}><i class="fa-solid fa-paste"></i></div>
-  
+
   </div>
   <textarea style="display: none;" type="text" name="" bind:this={clipBoardContainer}></textarea>
 </div>

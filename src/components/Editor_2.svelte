@@ -1,5 +1,5 @@
 <script>
-import { current } from "../store/common.js"
+import { current, focusEditor } from "../store/common.js"
 import { onMount } from 'svelte';
 
 
@@ -17,7 +17,7 @@ onMount(()=>{
 });
 </script>
 
-<div id="editor_2"></div>
+<div id="editor_2" on:click={()=>{$focusEditor = !$focusEditor}}></div>
 
 <style scoped>
 #editor_2{

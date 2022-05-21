@@ -17,3 +17,5 @@ export let ui = writable({
   showVideoPlayer: false,
   splitVideoScreen: false
 })
+
+export let focusEditor = writable(false)
